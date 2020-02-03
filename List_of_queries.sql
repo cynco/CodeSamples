@@ -778,3 +778,13 @@ where t1.subscore = t2.subscore
 WITH tb1 AS (select id from users where id < 130)
 select tb1.id user_id
 from tb1;
+                     
+-- Use array_agg to get the reservation id for the user's earliest-made reservation 
+-- (getting a record corresponding to the max within a group)
+
+select USER_ID
+  , get(array_agg(ar.id) within group (order by timestamp_created asc), 0) first_res_from_list
+from "PC_FIVETRAN_DB"."ANALYTICS".RESERVATIONS ar
+where user_id in (31999817,72903264)
+group by user_id --to get one row per user
+  ;
